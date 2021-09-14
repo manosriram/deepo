@@ -2,10 +2,8 @@
 import textwrap
 import functools
 
-
 class Composer(object):
-
-    def __init__(self, modules, cuda_ver, cudnn_ver, ubuntu_ver, versions={}):
+    def __init__(self, modules, cuda_ver, cudnn_ver, ubuntu_ver, workspace, versions={}):
         if len(modules) == 0:
             raise ValueError('Modules should contain at least one module')
         pending = self._traverse(modules)
@@ -14,6 +12,7 @@ class Composer(object):
         self.cuda_ver = cuda_ver
         self.cudnn_ver = cudnn_ver
         self.ubuntu_ver = ubuntu_ver
+        self.workspace = workspace
 
     def get(self):
         return self.modules
@@ -39,23 +38,25 @@ class Composer(object):
             ])),
             r'''
             FROM %s
-            ENV LANG C.UTF-8
             RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
                 PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
                 GIT_CLONE="git clone --depth 10" && \
-
                 rm -rf /var/lib/apt/lists/* \
                        /etc/apt/sources.list.d/cuda.list \
                        /etc/apt/sources.list.d/nvidia-ml.list && \
-
-                apt-get update && \
-            ''' % ('ubuntu:%s' % self.ubuntu_ver if self.cuda_ver is None
-                   else 'nvidia/cuda:%s-cudnn%s-devel-ubuntu%s' % (
-                    self.cuda_ver, self.cudnn_ver, self.ubuntu_ver)),
+                       apt-get update && \
+                %s
+            ''' % ('tools:latest', _indent(2, 'apt-get install --yes curl && \\ \n \
+                    curl --silent --location https://deb.nodesource.com/setup_14.x | bash - && \\ \n \
+                    apt-get install --yes nodejs && \\ \n \
+                    apt-get install --yes build-essential && \\ \n \
+                    pip install -U pip && pip install pipenv && \\ \n  \
+                    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python - && \\ \n \
+                    ') if self.workspace in ["jplab"] else ''),
             '\n',
             '\n'.join([
                 ''.join([
-                    _indent(3, self._split(m.name())),
+                    _indent(3, self._split(m.name())) if m.name() not in ["tools", "python"] else "",
                     _indent(1, m.build()),
                 ]) for m in self.instances
             ]),
