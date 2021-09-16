@@ -13,7 +13,7 @@ def _import(name):
     return mod
 
 
-def generate(args):
+def deepo_generator(args):
     """
     Generate a dockerfile according to the given modules to be installed.
     """
@@ -40,4 +40,4 @@ def generate(args):
 
 
 if __name__ == "__main__":
-    generate()
+    deepo_generator()
