@@ -46,7 +46,7 @@ class Composer(object):
                        /etc/apt/sources.list.d/nvidia-ml.list && \
                        apt-get update && \
                 %s
-            ''' % ('tools:latest', _indent(2, 'apt-get install --yes curl && \\ \n \
+            ''' % ('base-tools:latest', _indent(2, 'apt-get install --yes curl && \\ \n \
                     curl --silent --location https://deb.nodesource.com/setup_14.x | bash - && \\ \n \
                     apt-get install --yes nodejs && \\ \n \
                     apt-get install --yes build-essential && \\ \n \
@@ -56,7 +56,7 @@ class Composer(object):
             '\n',
             '\n'.join([
                 ''.join([
-                    _indent(3, self._split(m.name())) if m.name() not in ["tools", "python"] else "",
+                    _indent(3, self._split(m.name())) if m.name() not in ["base-tools", "python"] else "",
                     _indent(1, m.build()),
                 ]) for m in self.instances
             ]),
