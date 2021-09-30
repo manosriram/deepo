@@ -52,7 +52,7 @@ class Composer(object):
                     apt-get install --yes build-essential && \\ \n \
                     pip install -U pip && pip install pipenv && \\ \n  \
                     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python - && \\ \n \
-                    ') if self.workspace in ["jplab"] else ''),
+                    ') if self.workspace in ["jlab"] else ''),
             '\n',
             '\n'.join([
                 ''.join([
