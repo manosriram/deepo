@@ -46,7 +46,7 @@ class Composer(object):
                        /etc/apt/sources.list.d/nvidia-ml.list && \
                        apt-get update && \
                 %s
-            ''' % ('base-tools:latest', _indent(2, 'apt-get install --yes curl && \\ \n \
+            ''' % ('manosriram/base-tools:latest', _indent(2, 'apt-get install --yes curl && \\ \n \
                     curl --silent --location https://deb.nodesource.com/setup_14.x | bash - && \\ \n \
                     apt-get install --yes nodejs && \\ \n \
                     apt-get install --yes build-essential && \\ \n \
