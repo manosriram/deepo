@@ -37,7 +37,8 @@ class Composer(object):
                 self._split(),
             ])),
             r'''
-            FROM %s
+            FROM %s \
+            RUN cat /etc/resolv.conf \
             RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
                 PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
                 GIT_CLONE="git clone --depth 10" && \
