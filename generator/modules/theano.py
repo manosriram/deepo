@@ -15,6 +15,7 @@ class Theano(Module):
                 && \
         ''' + (
             '' if self.composer.cuda_ver is None else r'''
+            pip install -U pip setuptools && \
             wget -qO- https://github.com/Theano/libgpuarray/archive/v0.7.6.tar.gz | tar xz -C ~ && \
             cd ~/libgpuarray* && mkdir -p build && cd build && \
             cmake -D CMAKE_BUILD_TYPE=RELEASE \
@@ -22,9 +23,8 @@ class Theano(Module):
                   .. && \
             make -j"$(nproc)" install && \
             cd ~/libgpuarray* && \
-            python setup.py build && \
-            python setup.py install && \
-
+            python3 setup.py build && \
+            python3 setup.py install && \
             printf '[global]\nfloatX = float32\ndevice = cuda0\n\n[dnn]\n'''
             + r'''include_path = /usr/local/cuda/targets'''
             + r'''/x86_64-linux/include\n' > ~/.theanorc && \
@@ -33,3 +33,4 @@ class Theano(Module):
                 https://github.com/Theano/Theano/archive/master.zip \
                 && \
         '''
+
