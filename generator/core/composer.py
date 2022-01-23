@@ -39,28 +39,31 @@ class Composer(object):
             r'''
             FROM %s
             RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
-                PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
+                PIP_INSTALL="python3 -m pip --no-cache-dir install --upgrade" && \
                 GIT_CLONE="git clone --depth 10" && \
                 rm -rf /var/lib/apt/lists/* \
+
                        /etc/apt/sources.list.d/cuda.list \
                        /etc/apt/sources.list.d/nvidia-ml.list && \
                        apt-get update && \
                 %s
             ''' % ('manosriram/base-tools' if self.cuda_ver is None
-                   else 'nvidia/cuda:%s%s-devel-ubuntu%s' % (
+                     else 'manosriram/base-tools-gpu-%s' % (
+                #    else 'nvidia/cuda:%s%s-devel-ubuntu%s' % (
                     self.cuda_ver,
-                    '-cudnn%s' % self.cudnn_ver if self.cudnn_ver else '',
-                    self.ubuntu_ver), _indent(2, 'apt-get install --yes curl python3-venv && \\ \n \
+                    ), _indent(2, 'apt-get install --yes curl python3-venv && \\ \n \
                     curl --silent --location https://deb.nodesource.com/setup_14.x | bash - && \\ \n \
                     apt-get install --yes nodejs && \\ \n \
                     apt-get install --yes build-essential && \\ \n \
-                    pip install -U pip && pip install pipenv && \\ \n  \
-                    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python - && \\ \n \
+                    apt install -y python3-pip && \\ \n \
+                    pip3 install pipenv termcolor==1.1.0 && \\ \n  \
+                    pip3 install poetry && \\ \n \
                     ') if self.workspace in ["jlab"] else ''),
+                    # curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 - && \\ \n \
             '\n',
             '\n'.join([
                 ''.join([
-                    _indent(3, self._split(m.name())) if m.name() not in ["base-tools", "python"] else "",
+                    _indent(3, self._split(m.name())),
                     _indent(1, m.build()),
                 ]) for m in self.instances
             ]),
@@ -130,3 +133,4 @@ class Composer(object):
                 ins.version = versions[m]
             inses.append(ins)
         return inses
+

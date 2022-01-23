@@ -9,23 +9,24 @@ class Tools(Module):
         return ''
 
     def build(self):
-        return r'''
-            DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-                build-essential \
-                apt-utils \
-                ca-certificates \
-                wget \
-                git \
-                vim \
-                libssl-dev \
-                curl \
-                unzip \
-                unrar \
-                && \
+        return ""
+        # return r'''
+            # DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+            #     build-essential \
+            #     apt-utils \
+            #     ca-certificates \
+            #     wget \
+            #     git \
+            #     vim \
+            #     libssl-dev \
+            #     curl \
+            #     unzip \
+            #     unrar \
+            #     && \
 
-            $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
-            cd ~/cmake && \
-            ./bootstrap && \
-            make -j"$(nproc)" install && \
-            '''
+            # $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
+            # cd ~/cmake && \
+            # ./bootstrap && \
+            # make -j"$(nproc)" install && \
+            # '''
 
