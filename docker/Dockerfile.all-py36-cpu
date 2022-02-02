@@ -15,7 +15,7 @@
 # jupyterlab    latest (pip)
 # keras         latest (pip)
 # lasagne       latest (git)
-# opencv        4.5.2  (git)
+# opencv        4.5.4  (git)
 # sonnet        latest (pip)
 # caffe         latest (git)
 # cntk          latest (pip)
@@ -48,12 +48,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         curl \
         unzip \
         unrar \
+        cmake \
         && \
-
-    $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
-    cd ~/cmake && \
-    ./bootstrap && \
-    make -j"$(nproc)" install && \
 
 # ==================================================================
 # darknet
@@ -163,10 +159,9 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         && \
 
     $PIP_INSTALL \
-        --no-binary onnx onnx \
-        && \
-
-    $PIP_INSTALL \
+        numpy \
+        protobuf \
+        onnx \
         onnxruntime \
         && \
 
@@ -191,7 +186,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         typing \
         && \
     $PIP_INSTALL \
-        --pre torch torchvision -f \
+        --pre torch torchvision torchaudio -f \
         https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html \
         && \
 
@@ -227,10 +222,9 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # keras
 # ------------------------------------------------------------------
 
-    $PIP_INSTALL \
-        h5py \
-        keras \
-        && \
+    # Now Keras comes packaged with TensorFlow 2
+    # as tensorflow.keras. To start using Keras,
+    # simply install TensorFlow 2.
 
 # ==================================================================
 # lasagne
@@ -257,7 +251,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         protobuf-compiler \
         && \
 
-    $GIT_CLONE --branch 4.5.2 https://github.com/opencv/opencv ~/opencv && \
+    $GIT_CLONE --branch 4.5.4 https://github.com/opencv/opencv ~/opencv && \
     mkdir -p ~/opencv/build && cd ~/opencv/build && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE \
           -D CMAKE_INSTALL_PREFIX=/usr/local \

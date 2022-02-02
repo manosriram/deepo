@@ -4,7 +4,6 @@
 
 import os
 import textwrap
-import datetime
 
 
 def indent(n, s):
@@ -14,8 +13,15 @@ def indent(n, s):
 
 def get_tags(postfix,
     default_mod='all',
-    default_platform='cu101',
-    default_pyver='py36'):
+    default_platform='cu',
+    default_lang='py'):
+
+    def is_default_mod(mod):
+        return mod and default_mod in mod
+    def is_default_platform(platform):
+        return platform and default_platform in platform
+    def is_default_lang(lang):
+        return lang and default_lang in lang
 
     terms = postfix.split('-')
     if len(terms) == 2:
@@ -26,24 +32,26 @@ def get_tags(postfix,
         pyver, platform = terms[-2], terms[-1]
 
     tags = [postfix]
-    if platform == default_platform:
+    if is_default_platform(platform):
         tags.append('-'.join(filter(None, (mod, pyver))))
-    if pyver == default_pyver:
+    if is_default_lang(pyver):
         tags.append('-'.join(filter(None, (mod, platform))))
-    if mod == default_mod:
+    if is_default_mod(mod):
         tags.append('-'.join(filter(None, (pyver, platform))))
-    if platform == default_platform and pyver == default_pyver:
+    if is_default_platform(platform) and is_default_lang(pyver):
         tags.append(mod)
-    if mod == default_mod and pyver == default_pyver:
+    if is_default_mod(mod) and is_default_lang(pyver):
         tags.append(platform)
-    if mod == default_mod and platform == default_platform:
+    if is_default_mod(mod) and is_default_platform(platform):
         tags.append(pyver)
-        if platform == default_platform:
+        if is_default_platform(platform):
             tags.append('latest')
 
     if mod == 'all':
         for t in list(tags):
-            tags.append(t.replace('all', 'all-jupyter'))
+            t = t.replace('all', 'all-jupyter')
+            if t not in tags:
+                tags.append(t)
 
     # for t in list(tags):
     #     if 'latest' not in t:
@@ -53,7 +61,7 @@ def get_tags(postfix,
 
 
 def get_job(tags):
-    job_name = '_'.join(tags)
+    job_name = '_'.join(tags)[:99]
     build_scripts = indent(1, textwrap.dedent('''
         %s:
             runs-on: ubuntu-latest
@@ -62,7 +70,6 @@ def get_job(tags):
                 - name: Free disk space
                   run: |
                     df -h
-                    sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                     sudo apt-get autoremove -y
                     sudo apt-get clean
                     sudo swapoff -a
@@ -97,7 +104,6 @@ def get_job(tags):
             import theano as m; print(m.__name__, ':', m.__version__);
             import lasagne as m; print(m.__name__, ':', m.__version__);
             import caffe as m; print(m.__name__, ':', m.__version__);
-            import caffe2.python as m; print(m.__name__, ':', dir(m));
             import paddle as m; print(m.__name__, ':', m.__version__);
             from tensorflow import keras as m; print(m.__name__, ':', m.__version__);
             ''').replace('\n', '')
@@ -114,9 +120,15 @@ def get_job(tags):
     return job_name, build_scripts
 
 
+def write(f, scripts):
+    for line in scripts.splitlines():
+        f.write(line.rstrip())
+        f.write('\n')
+
+
 def generate(ci_fname):
     with open(ci_fname, 'w') as f:
-        f.write(textwrap.dedent('''
+        write(f, textwrap.dedent('''
             name: deepo CI
             on: [push]
             jobs:
@@ -130,7 +142,7 @@ def generate(ci_fname):
         job_names.append(job_name)
 
         with open(ci_fname, 'a') as f:
-            f.write(build_scripts)
+            write(f, build_scripts)
 
 
 if __name__ == '__main__':

@@ -8,8 +8,7 @@ from .python import Python
 class Pytorch(Module):
 
     def build(self):
-        cuver = 'cpu' if self.composer.cuda_ver is None else 'cu%d' % (
-            float(self.composer.cuda_ver) * 10)
+        cuver = 'cpu' if self.composer.cuda_ver is None else 'cu%s' % ''.join(self.composer.cuda_ver.split('.')[:2])
         return r'''
             $PIP_INSTALL \
                 future \
@@ -20,7 +19,7 @@ class Pytorch(Module):
                 typing \
                 && \
             $PIP_INSTALL \
-                --pre torch torchvision -f \
+                --pre torch torchvision torchaudio -f \
                 https://download.pytorch.org/whl/nightly/%s/torch_nightly.html \
                 && \
         ''' % cuver

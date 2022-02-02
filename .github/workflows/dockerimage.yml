@@ -1,15 +1,14 @@
 name: deepo CI
 on: [push]
 jobs:
-    
-    lasagne-py36-cu111_lasagne-cu111:
+
+    pytorch-py36-cu113_pytorch-py36_pytorch-cu113_pytorch:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -17,14 +16,16 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:lasagne-py36-cu111 -t ${{secrets.DOCKER_REPO}}:lasagne-cu111 -f docker/Dockerfile.lasagne-py36-cu111 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:pytorch-py36-cu113 -t ${{secrets.DOCKER_REPO}}:pytorch-py36 -t ${{secrets.DOCKER_REPO}}:pytorch-cu113 -t ${{secrets.DOCKER_REPO}}:pytorch -f docker/Dockerfile.pytorch-py36-cu113 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:lasagne-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:lasagne-cu111
+                docker push ${{secrets.DOCKER_REPO}}:pytorch-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:pytorch-py36
+                docker push ${{secrets.DOCKER_REPO}}:pytorch-cu113
+                docker push ${{secrets.DOCKER_REPO}}:pytorch
 
-    
+
     mxnet-py36-cpu_mxnet-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -32,7 +33,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -47,7 +47,7 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:mxnet-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:mxnet-cpu
 
-    
+
     tensorflow-py36-cpu_tensorflow-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -55,7 +55,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -70,7 +69,31 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:tensorflow-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:tensorflow-cpu
 
-    
+
+    sonnet-py36-cu113_sonnet-py36_sonnet-cu113_sonnet:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:sonnet-py36-cu113 -t ${{secrets.DOCKER_REPO}}:sonnet-py36 -t ${{secrets.DOCKER_REPO}}:sonnet-cu113 -t ${{secrets.DOCKER_REPO}}:sonnet -f docker/Dockerfile.sonnet-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:sonnet-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:sonnet-py36
+                docker push ${{secrets.DOCKER_REPO}}:sonnet-cu113
+                docker push ${{secrets.DOCKER_REPO}}:sonnet
+
+
     sonnet-py36-cpu_sonnet-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -78,7 +101,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -93,15 +115,14 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:sonnet-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:sonnet-cpu
 
-    
-    all-py36-cpu_all-cpu_py36-cpu_cpu_all-jupyter-py36-cpu_all-jupyter-cpu_py36-cpu_cpu:
+
+    tensorflow-py36-cu113_tensorflow-py36_tensorflow-cu113_tensorflow:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -109,7 +130,31 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:all-py36-cpu -t ${{secrets.DOCKER_REPO}}:all-cpu -t ${{secrets.DOCKER_REPO}}:py36-cpu -t ${{secrets.DOCKER_REPO}}:cpu -t ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cpu -t ${{secrets.DOCKER_REPO}}:all-jupyter-cpu -t ${{secrets.DOCKER_REPO}}:py36-cpu -t ${{secrets.DOCKER_REPO}}:cpu -f docker/Dockerfile.all-py36-cpu .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:tensorflow-py36-cu113 -t ${{secrets.DOCKER_REPO}}:tensorflow-py36 -t ${{secrets.DOCKER_REPO}}:tensorflow-cu113 -t ${{secrets.DOCKER_REPO}}:tensorflow -f docker/Dockerfile.tensorflow-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:tensorflow-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:tensorflow-py36
+                docker push ${{secrets.DOCKER_REPO}}:tensorflow-cu113
+                docker push ${{secrets.DOCKER_REPO}}:tensorflow
+
+
+    all-py36-cpu_all-cpu_py36-cpu_cpu_all-jupyter-py36-cpu_all-jupyter-cpu:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:all-py36-cpu -t ${{secrets.DOCKER_REPO}}:all-cpu -t ${{secrets.DOCKER_REPO}}:py36-cpu -t ${{secrets.DOCKER_REPO}}:cpu -t ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cpu -t ${{secrets.DOCKER_REPO}}:all-jupyter-cpu -f docker/Dockerfile.all-py36-cpu .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
@@ -119,15 +164,13 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:cpu
                 docker push ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:all-jupyter-cpu
-                docker push ${{secrets.DOCKER_REPO}}:py36-cpu
-                docker push ${{secrets.DOCKER_REPO}}:cpu
-            
-            - run: docker run ${{secrets.DOCKER_REPO}}:all-py36-cpu  python -c "import tensorflow as m; print(m.__name__, ':', m.__version__);import sonnet as m; print(m.__name__, ':', m.__version__);import torch as m; print(m.__name__, ':', m.__version__);import mxnet as m; print(m.__name__, ':', m.__version__);import cntk as m; print(m.__name__, ':', m.__version__);import chainer as m; print(m.__name__, ':', m.__version__);import theano as m; print(m.__name__, ':', m.__version__);import lasagne as m; print(m.__name__, ':', m.__version__);import caffe as m; print(m.__name__, ':', m.__version__);import caffe2.python as m; print(m.__name__, ':', dir(m));import paddle as m; print(m.__name__, ':', m.__version__);from tensorflow import keras as m; print(m.__name__, ':', m.__version__);"
+
+            - run: docker run ${{secrets.DOCKER_REPO}}:all-py36-cpu  python -c "import tensorflow as m; print(m.__name__, ':', m.__version__);import sonnet as m; print(m.__name__, ':', m.__version__);import torch as m; print(m.__name__, ':', m.__version__);import mxnet as m; print(m.__name__, ':', m.__version__);import cntk as m; print(m.__name__, ':', m.__version__);import chainer as m; print(m.__name__, ':', m.__version__);import theano as m; print(m.__name__, ':', m.__version__);import lasagne as m; print(m.__name__, ':', m.__version__);import caffe as m; print(m.__name__, ':', m.__version__);import paddle as m; print(m.__name__, ':', m.__version__);from tensorflow import keras as m; print(m.__name__, ':', m.__version__);"
             - run: docker run ${{secrets.DOCKER_REPO}}:all-py36-cpu  caffe --version
             - run: docker run ${{secrets.DOCKER_REPO}}:all-py36-cpu  darknet
             - run: docker run ${{secrets.DOCKER_REPO}}:all-py36-cpu  th
 
-    
+
     darknet-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -135,7 +178,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -149,7 +191,63 @@ jobs:
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
                 docker push ${{secrets.DOCKER_REPO}}:darknet-cpu
 
-    
+
+    all-py36-cu113_all-py36_all-cu113_py36-cu113_all_cu113_py36_latest_all-jupyter-py36-cu113_all-jupyt:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:all-py36-cu113 -t ${{secrets.DOCKER_REPO}}:all-py36 -t ${{secrets.DOCKER_REPO}}:all-cu113 -t ${{secrets.DOCKER_REPO}}:py36-cu113 -t ${{secrets.DOCKER_REPO}}:all -t ${{secrets.DOCKER_REPO}}:cu113 -t ${{secrets.DOCKER_REPO}}:py36 -t ${{secrets.DOCKER_REPO}}:latest -t ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cu113 -t ${{secrets.DOCKER_REPO}}:all-jupyter-py36 -t ${{secrets.DOCKER_REPO}}:all-jupyter-cu113 -t ${{secrets.DOCKER_REPO}}:all-jupyter -f docker/Dockerfile.all-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:all-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:all-py36
+                docker push ${{secrets.DOCKER_REPO}}:all-cu113
+                docker push ${{secrets.DOCKER_REPO}}:py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:all
+                docker push ${{secrets.DOCKER_REPO}}:cu113
+                docker push ${{secrets.DOCKER_REPO}}:py36
+                docker push ${{secrets.DOCKER_REPO}}:latest
+                docker push ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:all-jupyter-py36
+                docker push ${{secrets.DOCKER_REPO}}:all-jupyter-cu113
+                docker push ${{secrets.DOCKER_REPO}}:all-jupyter
+
+
+    cntk-py36-cu113_cntk-py36_cntk-cu113_cntk:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:cntk-py36-cu113 -t ${{secrets.DOCKER_REPO}}:cntk-py36 -t ${{secrets.DOCKER_REPO}}:cntk-cu113 -t ${{secrets.DOCKER_REPO}}:cntk -f docker/Dockerfile.cntk-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:cntk-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:cntk-py36
+                docker push ${{secrets.DOCKER_REPO}}:cntk-cu113
+                docker push ${{secrets.DOCKER_REPO}}:cntk
+
+
     lasagne-py36-cpu_lasagne-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -157,7 +255,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -172,15 +269,14 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:lasagne-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:lasagne-cpu
 
-    
-    paddle-py36-cu111_paddle-cu111:
+
+    darknet-cu113_darknet:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -188,22 +284,21 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:paddle-py36-cu111 -t ${{secrets.DOCKER_REPO}}:paddle-cu111 -f docker/Dockerfile.paddle-py36-cu111 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:darknet-cu113 -t ${{secrets.DOCKER_REPO}}:darknet -f docker/Dockerfile.darknet-cu113 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:paddle-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:paddle-cu111
+                docker push ${{secrets.DOCKER_REPO}}:darknet-cu113
+                docker push ${{secrets.DOCKER_REPO}}:darknet
 
-    
-    theano-py36-cu111_theano-cu111:
+
+    torch-cu102_torch:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -211,44 +306,21 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:theano-py36-cu111 -t ${{secrets.DOCKER_REPO}}:theano-cu111 -f docker/Dockerfile.theano-py36-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:theano-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:theano-cu111
-
-    
-    torch-cu102:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:torch-cu102 -f docker/Dockerfile.torch-cu102 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:torch-cu102 -t ${{secrets.DOCKER_REPO}}:torch -f docker/Dockerfile.torch-cu102 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
                 docker push ${{secrets.DOCKER_REPO}}:torch-cu102
+                docker push ${{secrets.DOCKER_REPO}}:torch
 
-    
-    caffe-py36-cu111_caffe-cu111:
+
+    keras-py36-cu113_keras-py36_keras-cu113_keras:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -256,14 +328,40 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:caffe-py36-cu111 -t ${{secrets.DOCKER_REPO}}:caffe-cu111 -f docker/Dockerfile.caffe-py36-cu111 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:keras-py36-cu113 -t ${{secrets.DOCKER_REPO}}:keras-py36 -t ${{secrets.DOCKER_REPO}}:keras-cu113 -t ${{secrets.DOCKER_REPO}}:keras -f docker/Dockerfile.keras-py36-cu113 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:caffe-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:caffe-cu111
+                docker push ${{secrets.DOCKER_REPO}}:keras-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:keras-py36
+                docker push ${{secrets.DOCKER_REPO}}:keras-cu113
+                docker push ${{secrets.DOCKER_REPO}}:keras
 
-    
+
+    chainer-py36-cu113_chainer-py36_chainer-cu113_chainer:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:chainer-py36-cu113 -t ${{secrets.DOCKER_REPO}}:chainer-py36 -t ${{secrets.DOCKER_REPO}}:chainer-cu113 -t ${{secrets.DOCKER_REPO}}:chainer -f docker/Dockerfile.chainer-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:chainer-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:chainer-py36
+                docker push ${{secrets.DOCKER_REPO}}:chainer-cu113
+                docker push ${{secrets.DOCKER_REPO}}:chainer
+
+
     keras-py36-cpu_keras-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -271,7 +369,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -286,30 +383,7 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:keras-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:keras-cpu
 
-    
-    mxnet-py36-cu111_mxnet-cu111:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:mxnet-py36-cu111 -t ${{secrets.DOCKER_REPO}}:mxnet-cu111 -f docker/Dockerfile.mxnet-py36-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:mxnet-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:mxnet-cu111
 
-    
     theano-py36-cpu_theano-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -317,7 +391,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -332,53 +405,7 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:theano-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:theano-cpu
 
-    
-    tensorflow-py36-cu111_tensorflow-cu111:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:tensorflow-py36-cu111 -t ${{secrets.DOCKER_REPO}}:tensorflow-cu111 -f docker/Dockerfile.tensorflow-py36-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:tensorflow-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:tensorflow-cu111
 
-    
-    sonnet-py36-cu111_sonnet-cu111:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:sonnet-py36-cu111 -t ${{secrets.DOCKER_REPO}}:sonnet-cu111 -f docker/Dockerfile.sonnet-py36-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:sonnet-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:sonnet-cu111
-
-    
     chainer-py36-cpu_chainer-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -386,7 +413,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -401,7 +427,7 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:chainer-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:chainer-cpu
 
-    
+
     torch-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -409,7 +435,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -423,30 +448,7 @@ jobs:
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
                 docker push ${{secrets.DOCKER_REPO}}:torch-cpu
 
-    
-    pytorch-py36-cu111_pytorch-cu111:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:pytorch-py36-cu111 -t ${{secrets.DOCKER_REPO}}:pytorch-cu111 -f docker/Dockerfile.pytorch-py36-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:pytorch-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:pytorch-cu111
 
-    
     cntk-py36-cpu_cntk-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -454,7 +456,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -469,15 +470,14 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:cntk-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:cntk-cpu
 
-    
-    cntk-py36-cu111_cntk-cu111:
+
+    lasagne-py36-cu113_lasagne-py36_lasagne-cu113_lasagne:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -485,22 +485,23 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:cntk-py36-cu111 -t ${{secrets.DOCKER_REPO}}:cntk-cu111 -f docker/Dockerfile.cntk-py36-cu111 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:lasagne-py36-cu113 -t ${{secrets.DOCKER_REPO}}:lasagne-py36 -t ${{secrets.DOCKER_REPO}}:lasagne-cu113 -t ${{secrets.DOCKER_REPO}}:lasagne -f docker/Dockerfile.lasagne-py36-cu113 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:cntk-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:cntk-cu111
+                docker push ${{secrets.DOCKER_REPO}}:lasagne-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:lasagne-py36
+                docker push ${{secrets.DOCKER_REPO}}:lasagne-cu113
+                docker push ${{secrets.DOCKER_REPO}}:lasagne
 
-    
-    all-py36-cu111_all-cu111_py36-cu111_cu111_all-jupyter-py36-cu111_all-jupyter-cu111_py36-cu111_cu111:
+
+    caffe-py36-cu113_caffe-py36_caffe-cu113_caffe:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -508,43 +509,16 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:all-py36-cu111 -t ${{secrets.DOCKER_REPO}}:all-cu111 -t ${{secrets.DOCKER_REPO}}:py36-cu111 -t ${{secrets.DOCKER_REPO}}:cu111 -t ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cu111 -t ${{secrets.DOCKER_REPO}}:all-jupyter-cu111 -t ${{secrets.DOCKER_REPO}}:py36-cu111 -t ${{secrets.DOCKER_REPO}}:cu111 -f docker/Dockerfile.all-py36-cu111 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:caffe-py36-cu113 -t ${{secrets.DOCKER_REPO}}:caffe-py36 -t ${{secrets.DOCKER_REPO}}:caffe-cu113 -t ${{secrets.DOCKER_REPO}}:caffe -f docker/Dockerfile.caffe-py36-cu113 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:all-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:all-cu111
-                docker push ${{secrets.DOCKER_REPO}}:py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:cu111
-                docker push ${{secrets.DOCKER_REPO}}:all-jupyter-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:all-jupyter-cu111
-                docker push ${{secrets.DOCKER_REPO}}:py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:cu111
+                docker push ${{secrets.DOCKER_REPO}}:caffe-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:caffe-py36
+                docker push ${{secrets.DOCKER_REPO}}:caffe-cu113
+                docker push ${{secrets.DOCKER_REPO}}:caffe
 
-    
-    keras-py36-cu111_keras-cu111:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:keras-py36-cu111 -t ${{secrets.DOCKER_REPO}}:keras-cu111 -f docker/Dockerfile.keras-py36-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:keras-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:keras-cu111
 
-    
     paddle-py36-cpu_paddle-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -552,7 +526,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -567,29 +540,7 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:paddle-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:paddle-cpu
 
-    
-    darknet-cu111:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - name: Free disk space
-              run: |
-                df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo swapoff -a
-                sudo rm -f /swapfile
-                docker rmi $(docker image ls -aq)
-                df -h
-            - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:darknet-cu111 -f docker/Dockerfile.darknet-cu111 .
-            - name: Deploy docker image
-              run: |
-                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:darknet-cu111
 
-    
     pytorch-py36-cpu_pytorch-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -597,7 +548,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -612,7 +562,55 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:pytorch-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:pytorch-cpu
 
-    
+
+    theano-py36-cu113_theano-py36_theano-cu113_theano:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:theano-py36-cu113 -t ${{secrets.DOCKER_REPO}}:theano-py36 -t ${{secrets.DOCKER_REPO}}:theano-cu113 -t ${{secrets.DOCKER_REPO}}:theano -f docker/Dockerfile.theano-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:theano-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:theano-py36
+                docker push ${{secrets.DOCKER_REPO}}:theano-cu113
+                docker push ${{secrets.DOCKER_REPO}}:theano
+
+
+    paddle-py36-cu113_paddle-py36_paddle-cu113_paddle:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: Free disk space
+              run: |
+                df -h
+                sudo apt-get autoremove -y
+                sudo apt-get clean
+                sudo swapoff -a
+                sudo rm -f /swapfile
+                docker rmi $(docker image ls -aq)
+                df -h
+            - name: Build docker image
+              run: docker build -t ${{secrets.DOCKER_REPO}}:paddle-py36-cu113 -t ${{secrets.DOCKER_REPO}}:paddle-py36 -t ${{secrets.DOCKER_REPO}}:paddle-cu113 -t ${{secrets.DOCKER_REPO}}:paddle -f docker/Dockerfile.paddle-py36-cu113 .
+            - name: Deploy docker image
+              run: |
+                docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+                docker push ${{secrets.DOCKER_REPO}}:paddle-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:paddle-py36
+                docker push ${{secrets.DOCKER_REPO}}:paddle-cu113
+                docker push ${{secrets.DOCKER_REPO}}:paddle
+
+
     caffe-py36-cpu_caffe-cpu:
         runs-on: ubuntu-latest
         steps:
@@ -620,7 +618,6 @@ jobs:
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -635,15 +632,14 @@ jobs:
                 docker push ${{secrets.DOCKER_REPO}}:caffe-py36-cpu
                 docker push ${{secrets.DOCKER_REPO}}:caffe-cpu
 
-    
-    chainer-py36-cu111_chainer-cu111:
+
+    mxnet-py36-cu113_mxnet-py36_mxnet-cu113_mxnet:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@master
             - name: Free disk space
               run: |
                 df -h
-                sudo apt-get remove -y '^ghc-8.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell
                 sudo apt-get autoremove -y
                 sudo apt-get clean
                 sudo swapoff -a
@@ -651,10 +647,12 @@ jobs:
                 docker rmi $(docker image ls -aq)
                 df -h
             - name: Build docker image
-              run: docker build -t ${{secrets.DOCKER_REPO}}:chainer-py36-cu111 -t ${{secrets.DOCKER_REPO}}:chainer-cu111 -f docker/Dockerfile.chainer-py36-cu111 .
+              run: docker build -t ${{secrets.DOCKER_REPO}}:mxnet-py36-cu113 -t ${{secrets.DOCKER_REPO}}:mxnet-py36 -t ${{secrets.DOCKER_REPO}}:mxnet-cu113 -t ${{secrets.DOCKER_REPO}}:mxnet -f docker/Dockerfile.mxnet-py36-cu113 .
             - name: Deploy docker image
               run: |
                 docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
-                docker push ${{secrets.DOCKER_REPO}}:chainer-py36-cu111
-                docker push ${{secrets.DOCKER_REPO}}:chainer-cu111
+                docker push ${{secrets.DOCKER_REPO}}:mxnet-py36-cu113
+                docker push ${{secrets.DOCKER_REPO}}:mxnet-py36
+                docker push ${{secrets.DOCKER_REPO}}:mxnet-cu113
+                docker push ${{secrets.DOCKER_REPO}}:mxnet
 
