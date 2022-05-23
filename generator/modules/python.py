@@ -4,14 +4,14 @@ from .tools import Tools
 
 
 @dependency(Tools)
-@version('3.6')
+@version('3.8')
 @source('apt')
 class Python(Module):
 
     def __init__(self, manager, **args):
         super(self.__class__, self).__init__(manager, **args)
-        if self.version not in ('2.7', '3.6',):
-            raise NotImplementedError('unsupported python version')
+        if float(self.version) < 3.8:
+            raise NotImplementedError('Only support python >= 3.8 currently.')
 
     def build(self):
         return ""
@@ -67,4 +67,3 @@ class Python(Module):
         #           tqdm \
         #           && \
         # '''
-
